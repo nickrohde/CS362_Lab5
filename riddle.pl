@@ -1,49 +1,33 @@
-% [s,s,s,s]
-
-
-
-% [e,e,e,e]
-
 
 change(s,e).
 change(e,s).
 
+% No more than 2 people on bridge
+move([A, A, X, Y, s], [a,b], [B, B, X, Y, e]) :- change(A, B).
+move([A, X, A, Y, s], [a,c], [B, X, B, Y, e]) :- change(A, B).
+move([A, X, Y, A, s], [a,d], [B, X, Y, B, e]) :- change(A, B).
+move([X, A, A, Y, s], [b,c], [X, B, B, Y, e]) :- change(A, B).
+move([X, A, Y, A, s], [b,d], [X, B, Y, B, e]) :- change(A, B).
+move([X, Y, A, A, s], [c,d], [X, Y, B, B, e]) :- change(A, B).
 
-move([A, A, X, Y], [a,b], [B, B, X, Y]) :- change(A, B).
-move([A, X, A, Y], [a,c], [B, X, B, Y]) :- change(A, B).
-move([A, X, Y, A], [a,d], [B, X, Y, B]) :- change(A, B).
-move([X, A, A, Y], [b,c], [X, B, B, Y]) :- change(A, B).
-move([X, A, Y, A], [b,d], [X, B, Y, B]) :- change(A, B).
-move([X, Y, A, A], [c,d], [X, Y, B, B]) :- change(A, B).
-move([A, X, Y, Z], [ a ], [B, X, Y, Z]) :- change(A, B).
-move([X, A, Y, Z], [ b ], [X, B, Y, Z]) :- change(A, B).
-move([X, Y, A, Z], [ c ], [X, Y, B, Z]) :- change(A, B).
-move([X, Y, Z, A], [ d ], [X, Y, Z, B]) :- change(A, B).
+% Torch must be returned after each trip
+move([A, X, Y, Z, e], [ a ], [B, X, Y, Z, s]) :- change(A, B).
+move([X, A, Y, Z, e], [ b ], [X, B, Y, Z, s]) :- change(A, B).
+move([X, Y, A, Z, e], [ c ], [X, Y, B, Z, s]) :- change(A, B).
+move([X, Y, Z, A, e], [ d ], [X, Y, Z, B, s]) :- change(A, B).
 
 
-timeOf([], 0):-!.
 timeOf([a], 1):-!.
 timeOf([b], 2):-!.
 timeOf([c], 5):-!.
 timeOf([d], 10):-!.
-timeOf([_, d], 10):-!.
-timeOf([d, _], 10):-!.
-timeOf([c, _], 5):-!.
-timeOf([_, c], 5):-!.
-timeOf([_, b], 2):-!.
-timeOf([b, _], 2):-!.
-timeOf([a, _], 1):-!.
-timeOf([_, a], 1):-!.
-timeOf([H|T], X):- timeOf(H, TH), timeOf(T, TT), X is TH+TT.
 
 
-% No more than 2 people on bridge
-% Torch must be returned after each trip
+timeOf([_,X],T) :- timeOf([X],T).
 
 
-solution([e,e,e,e],L,T):-!.
-solution(C,L,T):- timeOf(L,X), X =< T.
-
+solution([e,e,e,e,e],[],0).
+solution(C,[Move | Next], T):- move(C, Move, C2), timeOf(Move, X), T1 is T - X, T1 >= 0, solution(C2, Next, T1).
 
 
 
