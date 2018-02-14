@@ -26,13 +26,15 @@ timeOf([d], 10):-!.
 timeOf([_,X],T) :- timeOf([X],T).
 
 
-solution([e,e,e,e,e],[],0).
+solution([e,e,e,e,e], [], _).
 solution(C,[Move | Next], T):- move(C, Move, C2), timeOf(Move, X), T1 is T - X, T1 >= 0, solution(C2, Next, T1).
 
 
+run(X,T) :- solution([s,s,s,s,s], X, T).
+run(X) :- num(T), solution([s,s,s,s,s], X, T).
 
-
-
+num(1).
+num(X) :- num(Y), X is Y + 1.
 
 
 
